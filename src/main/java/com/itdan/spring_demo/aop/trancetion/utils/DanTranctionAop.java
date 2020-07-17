@@ -2,6 +2,7 @@ package com.itdan.spring_demo.aop.trancetion.utils;
 
 import com.itdan.spring_demo.aop.trancetion.annotation.DanTranctional;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -20,6 +21,13 @@ public class DanTranctionAop {
 
     @Autowired
     private TranctionalUtils tranctionalUtils;
+
+    //异常处理，回滚事务
+    @AfterThrowing("execution(* com.itdan.spring_demo.aop.trancetion.service.*.*.*(..))")
+    public void afterThrowing()throws Exception{
+        System.out.println("--回滚事务--");
+        tranctionalUtils.rollback();
+    }
 
     //环绕通知处理
     @Around("execution(* com.itdan.spring_demo.aop.trancetion.service.*.*.*(..) )")
