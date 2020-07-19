@@ -33,26 +33,35 @@ public class ClassPathXmlApplication {
         if (null== elements || elements.size()==0){
             throw new Exception("配置文件中未配置相应信息");
         }
-        //2.根据id获取到对应的配置bean信息
-      for(Element element:elements){
-           //获取属性信息
-           String xmlBeanId = element.attributeValue("id");
-           //判断当前节点是否配置id字段
-           if(StringUtils.isEmpty(xmlBeanId)){
-               //未配置id字段,中断程序
-                continue;
-           }
-           if(xmlBeanId.equals(beanId)){
-               //表示是我们需要的Bean对象
-               String className = element.attributeValue("class");
-               //3.通过反射机制初始化对象，并存储到IOC容器中
-               Object bean = initBean(className);
-               return bean;
-           }
-       }
-        return null;
+      return   getElementInfo(elements,beanId);
     }
 
+    /**
+     * 获取标签元素的信息
+     * @param elements
+     * @param beanId
+     * @return
+     */
+    public Object getElementInfo( List<Element> elements ,String beanId) throws IllegalAccessException, InstantiationException, ClassNotFoundException {
+        //2.根据id获取到对应的配置bean信息
+        for(Element element:elements){
+            //获取属性信息
+            String xmlBeanId = element.attributeValue("id");
+            //判断当前节点是否配置id字段
+            if(StringUtils.isEmpty(xmlBeanId)){
+                //未配置id字段,中断程序
+                continue;
+            }
+            if(xmlBeanId.equals(beanId)){
+                //表示是我们需要的Bean对象
+                String className = element.attributeValue("class");
+                //3.通过反射机制初始化对象，并存储到IOC容器中
+                Object bean = initBean(className);
+                return bean;
+            }
+        }
+        return null;
+    }
 
     /**
      * 获取xml配置文件
