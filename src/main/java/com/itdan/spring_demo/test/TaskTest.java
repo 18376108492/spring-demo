@@ -6,8 +6,10 @@ import org.omg.CORBA.DATA_CONVERSION;
 import java.sql.SQLOutput;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -17,38 +19,57 @@ public class TaskTest {
 
     public static void main(String[] args) throws ParseException {
 
-        Calendar calendar = Calendar.getInstance();
-      //   String DAY_OF_14="yyyy-MM-14 23:59:59";
-      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-      // SimpleDateFormat sdf = new SimpleDateFormat(DAY_OF_14);
+//        Calendar calendar = Calendar.getInstance();
+//      //   String DAY_OF_14="yyyy-MM-14 23:59:59";
+//      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//      // SimpleDateFormat sdf = new SimpleDateFormat(DAY_OF_14);
+//
+//       // calendar.add(Calendar.MONTH, 1);
+//       // calendar.set(Calendar.DAY_OF_MONTH, 0);
+////        calendar.add(Calendar.MONTH, 0);
+////        calendar.set(Calendar.DAY_OF_MONTH, 1);
+//        int actualMinimum = calendar.getActualMinimum(Calendar.DAY_OF_MONTH);
+//        int actualMaximum = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+//        //设置本月起始日的年月日时分秒格式
+//        //calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONDAY),actualMinimum,00,00,00);
+//        Date calendarTime = calendar.getTime();
+//        //设置本月结束日的年月日时分秒格式
+//        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONDAY),actualMaximum,23,59,59);
+//        String format = sdf.format(calendar.getTime());
+//        Date parse = sdf.parse(format);
+//        System.out.println("Calendar:"+calendarTime);
+//        System.out.println("format:"+format);
+//
+//        System.out.println(new Date().getDate());
+//
+//        System.out.println("----------------------季度测试---------------------------");
+//       // System.out.println("获取当前季度:"+ getQuarter());
+//        //获取本季度第一天是时间和最后一天时间
+//        Date[] dates = getCurrQuarter(1);
+//        System.out.println("本季度任务开始时间:"+sdf.format(dates[0]));
+//        System.out.println("本季度任务结束时间:"+sdf.format(dates[1]));
+//
+//        System.out.println(new Date().getMonth());
 
-       // calendar.add(Calendar.MONTH, 1);
-       // calendar.set(Calendar.DAY_OF_MONTH, 0);
-//        calendar.add(Calendar.MONTH, 0);
-//        calendar.set(Calendar.DAY_OF_MONTH, 1);
-        int actualMinimum = calendar.getActualMinimum(Calendar.DAY_OF_MONTH);
-        int actualMaximum = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-        //设置本月起始日的年月日时分秒格式
-        //calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONDAY),actualMinimum,00,00,00);
-        Date calendarTime = calendar.getTime();
-        //设置本月结束日的年月日时分秒格式
-        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONDAY),actualMaximum,23,59,59);
-        String format = sdf.format(calendar.getTime());
-        Date parse = sdf.parse(format);
-        System.out.println("Calendar:"+calendarTime);
-        System.out.println("format:"+format);
 
-        System.out.println(new Date().getDate());
+//        List<Date> nextWeekDateList = getNextWeekDateList();
+//        nextWeekDateList.forEach(i ->{
+//            System.out.println(dateToString(i,"yyyy-MM-dd HH:mm:ss"));
+//        });
 
-        System.out.println("----------------------季度测试---------------------------");
-       // System.out.println("获取当前季度:"+ getQuarter());
-        //获取本季度第一天是时间和最后一天时间
-        Date[] dates = getCurrQuarter(1);
-        System.out.println("本季度任务开始时间:"+sdf.format(dates[0]));
-        System.out.println("本季度任务结束时间:"+sdf.format(dates[1]));
+        System.out.println("------------------------");
+//         * 1.每班一次
+//                * 2.每班二次
+//                * 3.每天一次
+//                * 4.每天二次
+//                * 5.每两天一次
+//        for (int i = 0; i < 6; i++) {
+//            for (int j = 0; j <3 ; j++) {
+//
+//            }
+//        }
 
-        System.out.println(new Date().getMonth());
-
+        TimeResp timeResp = getTime1("每班一次");
 
     }
 
@@ -59,19 +80,19 @@ public class TaskTest {
      */
     public TimeResp getTime(String s) throws ParseException {
         Calendar calendar = Calendar.getInstance();
-       // SimpleDateFormat simpleDateFormat = null;
+        // SimpleDateFormat simpleDateFormat = null;
         TimeResp timeResp=new TimeResp();
 
         if (s.equals("每月一次")){
-           //每月一次，将本月一号作为任务开始时间，本月的最后一天作为任务结束时间
+            //每月一次，将本月一号作为任务开始时间，本月的最后一天作为任务结束时间
             Date taskTime = getTaskTime(calendar);
             timeResp.setTaskTime(taskTime);
             Date finishDate = getFinishDate(calendar);
             timeResp.setFinishTime(finishDate);
             System.out.println(taskTime.toString());
         }else  if(s.equals("每月两次")){
-           //每月两次，分别将本月一号和十五号作为任务开始日期，分别把本月十四号和月底的最后一天作为结束时间
-           //因为每月需要生产两次任务,生成任务创建时间之前，需要判断当前时间为本月一号还是十五号，再根据情况来生成任务开始和结束时间
+            //每月两次，分别将本月一号和十五号作为任务开始日期，分别把本月十四号和月底的最后一天作为结束时间
+            //因为每月需要生产两次任务,生成任务创建时间之前，需要判断当前时间为本月一号还是十五号，再根据情况来生成任务开始和结束时间
             //判断当前时间是否为本月一号
             if(new Date().getDate()==1){
                 Date taskTime = getTaskTime(calendar);
@@ -96,16 +117,16 @@ public class TaskTest {
             timeResp.setTaskTime(currQuarter[0]);
             timeResp.setFinishTime(currQuarter[1]);
         }else if(s.equals("半年一次")){
-           //半年一次，认为开始时间分别为1月1日和6月1日，任务结束时间为五月底和年底的最后一天
-           if(new Date().getMonth()<=4){
-               timeResp.setTaskTime(parseTempleDate(calendar.getTime(), "yyyy-01-01 00:00:00"));
-               timeResp.setFinishTime(parseTempleDate(calendar.getTime(), "yyyy-05-31 23:59:59"));
-           }else {
-               timeResp.setTaskTime(parseTempleDate(calendar.getTime(), "yyyy-06-01 00:00:00"));
-               timeResp.setFinishTime(parseTempleDate(calendar.getTime(), "yyyy-012-31 23:59:59"));
-           }
+            //半年一次，认为开始时间分别为1月1日和6月1日，任务结束时间为五月底和年底的最后一天
+            if(new Date().getMonth()<=4){
+                timeResp.setTaskTime(parseTempleDate(calendar.getTime(), "yyyy-01-01 00:00:00"));
+                timeResp.setFinishTime(parseTempleDate(calendar.getTime(), "yyyy-05-31 23:59:59"));
+            }else {
+                timeResp.setTaskTime(parseTempleDate(calendar.getTime(), "yyyy-06-01 00:00:00"));
+                timeResp.setFinishTime(parseTempleDate(calendar.getTime(), "yyyy-012-31 23:59:59"));
+            }
         }else if(s.equals("国庆前一次")){
-           
+
         }else if(s.equals("春节前一次")){
 
         }
@@ -113,155 +134,369 @@ public class TaskTest {
     }
 
     /**
-     * 获取本月的起始日期
-     * @param calendar
-     * @return
-     */
-    private Date getTaskTime(Calendar calendar){
-        if(calendar==null){
-            throw new RuntimeException("参数为空");
-        }
-        int actualMinimum = calendar.getActualMinimum(Calendar.DAY_OF_MONTH);
-        //设置本月起始日的年月日时分秒格式(设置为凌晨零点)
-        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONDAY),actualMinimum,00,00,00);
-        return calendar.getTime();
-     }
-
-    /**
-     * 获取本月的结束日期
-     * @param calendar
-     * @return
-     */
-     private Date getFinishDate(Calendar calendar){
-         if(calendar==null){
-             throw new RuntimeException("参数为空");
-         }
-         int actualMaximum = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-         //设置本月结束日的年月日时分秒格式
-         calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONDAY),actualMaximum,23,59,59);
-         return calendar.getTime();
-     }
-
-    /**
-     * 获取当前季度
+     * 1.每班一次
+     * 2.每班二次
+     * 3.每天一次
+     * 4.每天二次
+     * 5.每两天一次
      *
+     * 每周四生成下周的任务
+     *
+     * @return
      */
-    public static int getQuarter() {
-        Calendar c = Calendar.getInstance();
-        int month = c.get(c.MONTH) + 1;
-        int quarter = 0;
-        if (month >= 1 && month <= 3) {
-            quarter = 1;
-        } else if (month >= 4 && month <= 6) {
-            quarter = 2;
-        } else if (month >= 7 && month <= 9) {
-            quarter = 3;
+    public static TimeResp  getTime1(String s) throws ParseException {
+        Calendar calendar = Calendar.getInstance();
+        // SimpleDateFormat simpleDateFormat = null;
+        TimeResp timeResp=new TimeResp();
+        //获取下一周周一到周日时间集合
+        List<Date> nextWeekDateList = getNextWeekDateList();
+        int count=0;
+        if(s.equals("每班一次")){
+            for (int i = 0; i < 7; i++) {
+                Date date = nextWeekDateList.get(i);//获取星期数
+                System.out.println("前一天:"+dateToString(date,"yyyy-MM-dd HH:mm:ss"));
+                calendar.setTime(date);
+                calendar.add(Calendar.DAY_OF_MONTH, 1);
+                Date date1 =calendar.getTime() ;//获取星期数
+                System.out.println("后一天:"+dateToString(date1,"yyyy-MM-dd HH:mm:ss"));
+                //String s1 = dateToString(date, "yyyy-MM-dd");
+                for (int j = 0; j < 3; j++) {
+                    if(j==0){
+                        timeResp.setTaskTime(parseTempleDate(date,"yyyy-MM-dd 02:00:00"));
+                        timeResp.setFinishTime(parseTempleDate(date,"yyyy-MM-dd 10:00:00"));
+                    }else if(j==1){
+                        timeResp.setTaskTime(parseTempleDate(date,"yyyy-MM-dd 10:00:00"));
+                        timeResp.setFinishTime(parseTempleDate(date,"yyyy-MM-dd 18:00:00"));
+                    }else if(j==2){
+                        timeResp.setTaskTime(parseTempleDate(date,"yyyy-MM-dd 18:00:00"));
+                        //Date转Integer
+                        timeResp.setFinishTime(parseTempleDate(date1,"yyyy-MM-dd 02:00:00"));
+                    }
+                    //添加任务
+                    // saveCheckTask();
+                    count+=1;
+                    System.out.println("第"+count+"次:"+dateToString(timeResp.getTaskTime(),"yyyy-MM-dd HH:mm:ss"));
+                    System.out.println("第"+count+"次:"+dateToString(timeResp.getFinishTime(),"yyyy-MM-dd HH:mm:ss"));
+                }
+            }
+        }else if(s.equals("每班两次")){
+            for (int i = 0; i < 7; i++) {
+                Date date = nextWeekDateList.get(i);//获取星期数
+                calendar.setTime(date);
+                calendar.add(Calendar.DAY_OF_MONTH, 1);
+                Date date1 =calendar.getTime() ;//获取星期数
+                //String s1 = dateToString(date, "yyyy-MM-dd");
+                for (int j = 0; j < 6; j++) {
+                    if(j==0){
+                        timeResp.setTaskTime(parseTempleDate(date,"yyyy-MM-dd 02:00:00"));
+                        timeResp.setFinishTime(parseTempleDate(date,"yyyy-MM-dd 06:00:00"));
+                    }else if(j==1){
+                        timeResp.setTaskTime(parseTempleDate(date,"yyyy-MM-dd 06:00:00"));
+                        timeResp.setFinishTime(parseTempleDate(date,"yyyy-MM-dd 10:00:00"));
+                    }else if(j==2){
+                        timeResp.setTaskTime(parseTempleDate(date,"yyyy-MM-dd 10:00:00"));
+                        timeResp.setFinishTime(parseTempleDate(date,"yyyy-MM-dd 14:00:00"));
+                    }else if(j==3){
+                        timeResp.setTaskTime(parseTempleDate(date,"yyyy-MM-dd 14:00:00"));
+                        timeResp.setFinishTime(parseTempleDate(date,"yyyy-MM-dd 18:00:00"));
+                    }else if(j==4){
+                        timeResp.setTaskTime(parseTempleDate(date,"yyyy-MM-dd 18:00:00"));
+                        timeResp.setFinishTime(parseTempleDate(date,"yyyy-MM-dd 22:00:00"));
+                    }else if(j==5){
+                        timeResp.setTaskTime(parseTempleDate(date,"yyyy-MM-dd 22:00:00"));
+                        timeResp.setFinishTime(parseTempleDate(date1,"yyyy-MM-dd 02:00:00"));
+                    }
+                    //添加任务
+                    // saveCheckTask();
+                    count+=1;
+                    System.out.println("第"+ count+"次:"+dateToString(timeResp.getTaskTime(),"yyyy-MM-dd HH:mm:ss"));
+                    System.out.println("第"+count+"次:"+dateToString(timeResp.getFinishTime(),"yyyy-MM-dd HH:mm:ss"));
+                }
+            }
+        }else if(s.equals("每天一次")){
+            for (int i = 0; i < 7; i++) {
+                Date date = nextWeekDateList.get(i);//获取星期数
+                calendar.setTime(date);
+                calendar.add(Calendar.DAY_OF_MONTH, 1);
+                Date date1 =calendar.getTime() ;//获取星期数
+                timeResp.setTaskTime(parseTempleDate(date,"yyyy-MM-dd 02:00:00"));
+                timeResp.setFinishTime(parseTempleDate(date1,"yyyy-MM-dd 02:00:00"));
+                //添加数据
+                count+=1;
+                System.out.println("第"+count+"次:"+dateToString(timeResp.getTaskTime(),"yyyy-MM-dd HH:mm:ss"));
+                System.out.println("第"+count+"次:"+dateToString(timeResp.getFinishTime(),"yyyy-MM-dd HH:mm:ss"));
+            }
+        }else if(s.equals("每天两次")){
+            for (int i = 0; i < 7; i++) {
+                Date date = nextWeekDateList.get(i);//获取星期数
+                calendar.setTime(date);
+                calendar.add(Calendar.DAY_OF_MONTH, 1);
+                Date date1 = calendar.getTime();//获取星期数
+                for (int j = 0; j < 2; j++) {
+                    if (j == 0) {
+                        timeResp.setTaskTime(parseTempleDate(date, "yyyy-MM-dd 02:00:00"));
+                        timeResp.setFinishTime(parseTempleDate(date, "yyyy-MM-dd 12:00:00"));
+                    } else if (j == 1) {
+                        timeResp.setTaskTime(parseTempleDate(date, "yyyy-MM-dd 12:00:00"));
+                        timeResp.setFinishTime(parseTempleDate(date1, "yyyy-MM-dd 02:00:00"));
+                    }
+                      count+=1;
+                    System.out.println("第" + count+ "次:" + dateToString(timeResp.getTaskTime(), "yyyy-MM-dd HH:mm:ss"));
+                    System.out.println("第" + count + "次:" + dateToString(timeResp.getFinishTime(), "yyyy-MM-dd HH:mm:ss"));
+                }
+            }
+
+        }else if(s.equals("每两天一次")){
+            for (int i = 0; i < 3; i++) {
+                Date date=null;
+                if(i==0){
+                     date = nextWeekDateList.get(i);//获取星期数
+                }else {
+                     date = nextWeekDateList.get(i*2);//获取星期数
+                }
+                Date date1 = nextWeekDateList.get((i+1)*2);//获取星期数
+                timeResp.setTaskTime(parseTempleDate(date,"yyyy-MM-dd 02:00:00"));
+                if(i==2){
+                    //获取下周一的时间
+                    Date nextWeekMonday = getNextWeekMonday(date);
+                    timeResp.setFinishTime(parseTempleDate(nextWeekMonday,"yyyy-MM-dd 02:00:00"));
+                }else {
+                    timeResp.setFinishTime(parseTempleDate(date1,"yyyy-MM-dd 02:00:00"));
+                }
+                //添加数据
+                count+=1;
+                System.out.println("第"+count+"次:"+dateToString(timeResp.getTaskTime(),"yyyy-MM-dd HH:mm:ss"));
+                System.out.println("第"+count+"次:"+dateToString(timeResp.getFinishTime(),"yyyy-MM-dd HH:mm:ss"));
+            }
+        }
+        return timeResp;
+    }
+
+    /**
+     * 获取当前日期的下周一到下周日的所有日期集合
+     * @return
+     */
+    public static List<Date> getNextWeekDateList(){
+        Calendar cal1 = Calendar.getInstance();
+        Calendar cal2 =Calendar.getInstance();
+
+        cal1.setTime(new Date());
+
+        cal2.setTime(new Date());
+        // 获得当前日期是一个星期的第几天
+        int dayWeek = cal1.get(Calendar.DAY_OF_WEEK);
+
+        if(dayWeek == 1){
+            cal1.add(Calendar.DAY_OF_MONTH, 1);
+            cal2.add(Calendar.DAY_OF_MONTH, 7);
         } else {
-            quarter = 4;
+            cal1.add(Calendar.DAY_OF_MONTH, 1-dayWeek+8);
+            cal2.add(Calendar.DAY_OF_MONTH, 1-dayWeek+14);
         }
-        return quarter ;
+        Calendar cStart = Calendar.getInstance();
+        cStart.setTime(cal1.getTime());
+
+        List<Date> dateList = new ArrayList();
+        //别忘了，把起始日期加上
+        dateList.add(cal1.getTime());
+        // 此日期是否在指定日期之后
+        while (cal2.getTime().after(cStart.getTime())) {
+            // 根据日历的规则，为给定的日历字段添加或减去指定的时间量
+            cStart.add(Calendar.DAY_OF_MONTH, 1);
+            dateList.add(cStart.getTime());
+        }
+        return dateList;
     }
 
-
-    /**
-     * 获取某季度的第一天和最后一天
-     *	@param
-     */
-    public static Date[] getCurrQuarter(int num) throws ParseException {
-       Date [] dates=new Date[2];
-        String str = "";
-        // 设置本年的季
-        Calendar quarterCalendar = null;
-        //季度第一天模板
-        //季度最后一天模板
-        String QUARTER_Finish_DAY="yyyy-MM-dd 23:59:59";
-
-        switch (num) {
-            case 1: // 本年到现在经过了一个季度，在加上前4个季度
-                quarterCalendar = Calendar.getInstance();
-                quarterCalendar.set(Calendar.MONTH, 3);
-                quarterCalendar.set(Calendar.DATE, 1);
-                quarterCalendar.add(Calendar.DATE, -1);
-                //获取本季度最后一天
-                System.out.println(quarterCalendar.getTime().toString());
-                dates[0]=parseTempleDate(quarterCalendar.getTime(), "yyyy-01-01 00:00:00");
-                dates[1] = parseTempleDate(quarterCalendar.getTime(),QUARTER_Finish_DAY);
-                break;
-            case 2: // 本年到现在经过了二个季度，在加上前三个季度
-                quarterCalendar = Calendar.getInstance();
-                quarterCalendar.set(Calendar.MONTH, 6);
-                quarterCalendar.set(Calendar.DATE, 1);
-                quarterCalendar.add(Calendar.DATE, -1);
-                //季度第一天模板
-                dates[0]=parseTempleDate(quarterCalendar.getTime(), "yyyy-04-01 00:00:00");
-                dates[1] = parseTempleDate(quarterCalendar.getTime(),QUARTER_Finish_DAY);
-                break;
-            case 3:// 本年到现在经过了三个季度，在加上前二个季度
-                quarterCalendar = Calendar.getInstance();
-                quarterCalendar.set(Calendar.MONTH, 9);
-                quarterCalendar.set(Calendar.DATE, 1);
-                quarterCalendar.add(Calendar.DATE, -1);
-                //季度第一天模板
-                System.out.println();
-                dates[0]=parseTempleDate(quarterCalendar.getTime(), "yyyy-07-01 00:00:00");
-                dates[1] = parseTempleDate(quarterCalendar.getTime(),QUARTER_Finish_DAY);
-                break;
-            case 4:// 本年到现在经过了四个季度，在加上前一个季度
-                quarterCalendar = Calendar.getInstance();
-                String MONTH_FOR_10="yyyy-10-01 00:00:00";
-                String MONTH_FOR_12="yyyy-12-21 23:59:59";
-                dates[0]=parseTempleDate(quarterCalendar.getTime(), MONTH_FOR_10);
-                dates[1] = parseTempleDate(quarterCalendar.getTime(),MONTH_FOR_12);
-                break;
+    public static Date getThisWeekMonday(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        // 获得当前日期是一个星期的第几天
+        int dayWeek = cal.get(Calendar.DAY_OF_WEEK);
+        if (1 == dayWeek) {
+            cal.add(Calendar.DAY_OF_MONTH, -1);
         }
-        return dates;
+        // 设置一个星期的第一天，按中国的习惯一个星期的第一天是星期一
+        cal.setFirstDayOfWeek(Calendar.MONDAY);
+        // 获得当前日期是一个星期的第几天
+        int day = cal.get(Calendar.DAY_OF_WEEK);
+        // 根据日历的规则，给当前日期减去星期几与一个星期第一天的差值
+        cal.add(Calendar.DATE, cal.getFirstDayOfWeek() - day);
+        return cal.getTime();
     }
 
-
-    /**
-     * 用途：以指定的格式格式化日期字符串
-     * @param pattern 字符串的格式
-     * @param currentDate 被格式化日期
-     * @return Date 已格式化的日期字符串
-     * @throws NullPointerException 如果参数为空
-     */
-    public static Date parseTempleDate(Date currentDate, String pattern) throws ParseException {
-        if(currentDate == null || "".equals(pattern) || pattern == null){
-            return null;
-        }
-        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
-        String format = sdf.format(currentDate);
-        sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        return sdf.parse(format) ;
+    public static Date getNextWeekMonday(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(getThisWeekMonday(date));
+        cal.add(Calendar.DATE, 7);
+        return cal.getTime();
     }
 
-
-    class TimeResp{
-        private Date taskTime;
-        private Date finishTime;
-
-        public Date getTaskTime() {
-            return taskTime;
+        public static Date stringToDate(String s,String pattern) throws ParseException {
+            SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+            return sdf.parse(s);
         }
 
-        public void setTaskTime(Date taskTime) {
-            this.taskTime = taskTime;
+        /**
+         * 获取本月的起始日期
+         * @param calendar
+         * @return
+         */
+        private Date getTaskTime(Calendar calendar){
+            if(calendar==null){
+                throw new RuntimeException("参数为空");
+            }
+            int actualMinimum = calendar.getActualMinimum(Calendar.DAY_OF_MONTH);
+            //设置本月起始日的年月日时分秒格式(设置为凌晨零点)
+            calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONDAY),actualMinimum,00,00,00);
+            return calendar.getTime();
         }
 
-        public Date getFinishTime() {
-            return finishTime;
+        /**
+         * 获取本月的结束日期
+         * @param calendar
+         * @return
+         */
+        private Date getFinishDate(Calendar calendar){
+            if(calendar==null){
+                throw new RuntimeException("参数为空");
+            }
+            int actualMaximum = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+            //设置本月结束日的年月日时分秒格式
+            calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONDAY),actualMaximum,23,59,59);
+            return calendar.getTime();
         }
 
-        public void setFinishTime(Date finishTime) {
-            this.finishTime = finishTime;
+        /**
+         * 获取当前季度
+         *
+         */
+        public static int getQuarter() {
+            Calendar c = Calendar.getInstance();
+            int month = c.get(c.MONTH) + 1;
+            int quarter = 0;
+            if (month >= 1 && month <= 3) {
+                quarter = 1;
+            } else if (month >= 4 && month <= 6) {
+                quarter = 2;
+            } else if (month >= 7 && month <= 9) {
+                quarter = 3;
+            } else {
+                quarter = 4;
+            }
+            return quarter ;
         }
 
-        @Override
-        public String toString() {
-            return "TimeResp{" +
-                    "taskTime=" + taskTime +
-                    ", finishTime=" + finishTime +
-                    '}';
+
+
+        /**
+         * 获取某季度的第一天和最后一天
+         *	@param
+         */
+        public static Date[] getCurrQuarter(int num) throws ParseException {
+            Date [] dates=new Date[2];
+            String str = "";
+            // 设置本年的季
+            Calendar quarterCalendar = null;
+            //季度第一天模板
+            //季度最后一天模板
+            String QUARTER_Finish_DAY="yyyy-MM-dd 23:59:59";
+
+            switch (num) {
+                case 1: // 本年到现在经过了一个季度，在加上前4个季度
+                    quarterCalendar = Calendar.getInstance();
+                    quarterCalendar.set(Calendar.MONTH, 3);
+                    quarterCalendar.set(Calendar.DATE, 1);
+                    quarterCalendar.add(Calendar.DATE, -1);
+                    //获取本季度最后一天
+                    System.out.println(quarterCalendar.getTime().toString());
+                    dates[0]=parseTempleDate(quarterCalendar.getTime(), "yyyy-01-01 00:00:00");
+                    dates[1] = parseTempleDate(quarterCalendar.getTime(),QUARTER_Finish_DAY);
+                    break;
+                case 2: // 本年到现在经过了二个季度，在加上前三个季度
+                    quarterCalendar = Calendar.getInstance();
+                    quarterCalendar.set(Calendar.MONTH, 6);
+                    quarterCalendar.set(Calendar.DATE, 1);
+                    quarterCalendar.add(Calendar.DATE, -1);
+                    //季度第一天模板
+                    dates[0]=parseTempleDate(quarterCalendar.getTime(), "yyyy-04-01 00:00:00");
+                    dates[1] = parseTempleDate(quarterCalendar.getTime(),QUARTER_Finish_DAY);
+                    break;
+                case 3:// 本年到现在经过了三个季度，在加上前二个季度
+                    quarterCalendar = Calendar.getInstance();
+                    quarterCalendar.set(Calendar.MONTH, 9);
+                    quarterCalendar.set(Calendar.DATE, 1);
+                    quarterCalendar.add(Calendar.DATE, -1);
+                    //季度第一天模板
+                    System.out.println();
+                    dates[0]=parseTempleDate(quarterCalendar.getTime(), "yyyy-07-01 00:00:00");
+                    dates[1] = parseTempleDate(quarterCalendar.getTime(),QUARTER_Finish_DAY);
+                    break;
+                case 4:// 本年到现在经过了四个季度，在加上前一个季度
+                    quarterCalendar = Calendar.getInstance();
+                    String MONTH_FOR_10="yyyy-10-01 00:00:00";
+                    String MONTH_FOR_12="yyyy-12-21 23:59:59";
+                    dates[0]=parseTempleDate(quarterCalendar.getTime(), MONTH_FOR_10);
+                    dates[1] = parseTempleDate(quarterCalendar.getTime(),MONTH_FOR_12);
+                    break;
+            }
+            return dates;
         }
+
+
+
+
+
+        /**
+         * 用途：以指定的格式格式化日期字符串
+         * @param pattern 字符串的格式
+         * @param currentDate 被格式化日期
+         * @return Date 已格式化的日期字符串
+         * @throws NullPointerException 如果参数为空
+         */
+        public static Date parseTempleDate(Date currentDate, String pattern) throws ParseException {
+            if(currentDate == null || "".equals(pattern) || pattern == null){
+                return null;
+            }
+            SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+            String format = sdf.format(currentDate);
+            sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            return sdf.parse(format) ;
+        }
+
+        public static String dateToString(Date date,String pattern){
+            SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+            return sdf.format(date);
+        }
+
+        static class TimeResp{
+            private Date taskTime;
+            private Date finishTime;
+
+            public Date getTaskTime() {
+                return taskTime;
+            }
+
+            public void setTaskTime(Date taskTime) {
+                this.taskTime = taskTime;
+            }
+
+            public Date getFinishTime() {
+                return finishTime;
+            }
+
+            public void setFinishTime(Date finishTime) {
+                this.finishTime = finishTime;
+            }
+
+            @Override
+            public String toString() {
+                return "TimeResp{" +
+                        "taskTime=" + taskTime +
+                        ", finishTime=" + finishTime +
+                        '}';
+            }
+        }
+
+
     }
-}
