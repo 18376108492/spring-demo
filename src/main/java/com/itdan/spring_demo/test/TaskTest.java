@@ -57,7 +57,7 @@ public class TaskTest {
 //            System.out.println(dateToString(i,"yyyy-MM-dd HH:mm:ss"));
 //        });
 
-       // System.out.println("------------------------");
+        // System.out.println("------------------------");
 //         * 1.每班一次
 //                * 2.每班二次
 //                * 3.每天一次
@@ -69,17 +69,35 @@ public class TaskTest {
 //            }
 //        }
 
-       // TimeResp timeResp = getTime1("每班一次");
-          String s3="2020-01-25";
-          String s1="2018-02-16";
-          String s4="2021-02-12";
-          String s2="2019-02-05";
-          String s5="2022-02-01";
-         getNextSpringFestival(s1);
-         getNextSpringFestival(s2);
-         getNextSpringFestival(s3);
-         getNextSpringFestival(s4);
-         getNextSpringFestival(s5);
+        // TimeResp timeResp = getTime1("每班一次");
+        String s3 = "2020-01-25";
+        String s1 = "2018-02-16";
+        String s4 = "2021-02-12";
+        String s2 = "2019-02-05";
+        String s5 = "2022-02-01";
+        String s6 = "2007-02-18";
+        String s7 = "2008-02-07";
+        String s8 = "2009-01-26";
+        String s9 = "2010-02-14";
+        String s10 = "2011-02-03";
+        String s11 = "2012-01-23";
+        String s12 = "2013-02-10";
+        String s13 = "2014-01-31";
+
+
+        getNextSpringFestival(s1);
+        getNextSpringFestival(s2);
+        getNextSpringFestival(s3);
+        getNextSpringFestival(s4);
+        getNextSpringFestival(s5);
+        getNextSpringFestival(s6);
+        getNextSpringFestival(s7);
+        getNextSpringFestival(s8);
+        getNextSpringFestival(s9);
+        getNextSpringFestival(s10);
+        getNextSpringFestival(s11);
+        getNextSpringFestival(s12);
+        getNextSpringFestival(s13);
 
     }
 
@@ -523,32 +541,30 @@ public class TaskTest {
         Calendar calendar = Calendar.getInstance();
 //        int year=calendar.get(Calendar.YEAR);
 //        System.out.println("date2"+dateToString(date2,"yyyy-MM-dd"));
-        int year=Integer.valueOf(dateToString(date2,"yyyy"));
-        String s =(year+1)+"-"+ dateToString(date2, "MM-dd");
+        int year = Integer.valueOf(dateToString(date2, "yyyy"));
+        String s = (year + 1) + "-" + dateToString(date2, "MM-dd");
         Date date4 = stringToDate(s, "yyyy-MM-dd");
 //        System.out.println("date4"+dateToString(date4,"yyyy-MM-dd"));
         if (year % 4 == 0 && year % 100 != 0 || year % 400 == 0) {
             //上一年是闰年，下一春节会比今年春节晚19天
             calendar.setTime(date4);
-            calendar.add(Calendar.DAY_OF_MONTH,19);
+            calendar.add(Calendar.DAY_OF_MONTH, 19 );
         } else {
-           //上一年是平年，下一个春节会提前11天
+            //上一年是平年，下一个春节会提前11天
             calendar.setTime(date4);
-            calendar.add(Calendar.DAY_OF_MONTH,-11);
+            calendar.add(Calendar.DAY_OF_MONTH, -11);
 
         }
         Date calendarTime = calendar.getTime();
-        System.out.println("明年春节时间为:"+dateToString(calendarTime,"yyyy-MM-dd"));
+        System.out.println("明年春节时间为:" + dateToString(calendarTime, "yyyy-MM-dd"));
     }
 
 
     /**
      * 获取两个时间的时间间隔
      *
-     * @param beginDate
-     * 开始时间
-     * @param endDate
-     * 结束时间
+     * @param beginDate 开始时间
+     * @param endDate   结束时间
      * @return
      */
     public static int getDaysBetween(Calendar beginDate, Calendar endDate) {
